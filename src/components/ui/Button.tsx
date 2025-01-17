@@ -8,7 +8,7 @@ interface ButtonProps {
   to?: string;
   type?: 'button' | 'submit' | 'reset';
   className?: string;
-  disabled?: any; 
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({ label, onClick, to, type = 'button', className, disabled  }) => {

@@ -15,6 +15,8 @@ export const useRegisterFormHandler = (defaultFormData: any, recaptchaRef: any, 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
  const [showMap, setShowMap] = useState(false);
+ const [loading, setLoading] = useState(false);
+
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -31,7 +33,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     const formErrors = validateForm(formData);
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
@@ -42,7 +44,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
       toast.error("Please complete the captcha.");
       return;
     }
-  
+    setLoading(true);
     try {
         // Encrypt the password using bcryptjs
         const hashedPassword = await bcrypt.hash(formData.password, 8);
@@ -80,9 +82,11 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
         } else {
           toast.error(`Registration failed: ${error.message}`);
         }
-      }
+      } finally {
+            setLoading(false);
+        }
     };
   
 
-  return { showMap, setShowMap, formData, errors, handleChange, handleSubmit, setFormData, setErrors };
+  return {loading, showMap, setShowMap, formData, errors, handleChange, handleSubmit, setFormData, setErrors };
 };

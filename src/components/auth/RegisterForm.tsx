@@ -23,7 +23,7 @@ const center = {
 const RegisterForm: React.FC = () => {
   const countries = useFetchCountries();
  const { capchaToken, recaptchaRef, handleRecaptcha } = useRecaptcha();
- const { formData, errors, handleChange, handleSubmit,
+ const { formData, errors, loading, handleChange, handleSubmit,
    setFormData,
    showMap,
   } = useRegisterFormHandler(
@@ -184,7 +184,10 @@ const { isLoaded, loadError,
         </div>
 
 <div className='items-center flex justify-center'>
-        <Button  disabled={!capchaToken} label="Create Account" type="submit" />
+        <Button  //!capchaToken ||
+         disabled={ loading} 
+         label={loading ? "Loading..." : "Create Account"}
+         type="submit" />
         </div>
 
         <div className="text-center mt-4">
