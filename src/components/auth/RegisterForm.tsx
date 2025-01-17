@@ -1,64 +1,66 @@
-import React from 'react';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
-import { Link} from 'react-router-dom';
-import PhoneInput from './PhoneInput';
-import ReCAPTCHA from 'react-google-recaptcha';
-import useRecaptcha from '../../hooks/useRecaptcha';
-import useFetchCountries from '../../hooks/useFetchCountries';
-import { useRegisterFormHandler } from '../../hooks/useRegisterFormHandler';
-import { useMap } from '../../hooks/useMap';
-import { Autocomplete, GoogleMap, Marker } from '@react-google-maps/api';
-
-
+import React from "react";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
+import { Link } from "react-router-dom";
+import PhoneInput from "./PhoneInput";
+import ReCAPTCHA from "react-google-recaptcha";
+import useRecaptcha from "../../hooks/useRecaptcha";
+import useFetchCountries from "../../hooks/useFetchCountries";
+import { useRegisterFormHandler } from "../../hooks/useRegisterFormHandler";
+import { useMap } from "../../hooks/useMap";
+import { Autocomplete, GoogleMap, Marker } from "@react-google-maps/api";
 
 const mapContainerStyle = {
-  width: '100%',
-  height: '400px',
+  width: "100%",
+  height: "400px",
 };
 const center = {
-  lat: 7.2905715, 
+  lat: 7.2905715,
   lng: 80.6337262,
 };
 const RegisterForm: React.FC = () => {
   const countries = useFetchCountries();
- const { capchaToken, recaptchaRef, handleRecaptcha } = useRecaptcha();
- const { formData, errors, loading, handleChange, handleSubmit,
-   setFormData,
-   showMap,
+  const { capchaToken, recaptchaRef, handleRecaptcha } = useRecaptcha();
+  const {
+    formData,
+    errors,
+    loading,
+    handleChange,
+    handleSubmit,
+    setFormData,
+    showMap,
   } = useRegisterFormHandler(
-  {
-    id: "",
-    companyName: "",
-    companyAddress: "",
-    companyContact: "+1",
-    phoneNumber: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    ageConfirmed: false,
-    captcha: "",
-    role: "Admin",
-  },
-  recaptchaRef,
-  capchaToken
-);
+    {
+      id: "",
+      companyName: "",
+      companyAddress: "",
+      companyContact: "+1",
+      phoneNumber: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      ageConfirmed: false,
+      captcha: "",
+      role: "Admin",
+    },
+    recaptchaRef,
+    capchaToken
+  );
 
-const { isLoaded, loadError,
-  markerPosition,onAutocompleteLoad, onPlaceChanged
- } = useMap(formData,center);
+  const {
+    isLoaded,
+    loadError,
+    markerPosition,
+    onAutocompleteLoad,
+    onPlaceChanged,
+  } = useMap(formData, center);
 
-  
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading maps...</div>;
 
   return (
-<form    onSubmit={handleSubmit}
-  className="bg-white shadow-md rounded-lg p-3 md:p-8 w-full max-w-md"
->
-
-        <h1 className="text-2xl font-bold text-center mb-6">Register </h1>
-
+    <>
+      <form onSubmit={handleSubmit}>
         <Input
           label="Company Name"
           type="text"
@@ -67,46 +69,53 @@ const { isLoaded, loadError,
           onChange={handleChange}
           required
         />
- {errors.companyName && <p>{errors.companyName}</p>}
+        {errors.companyName && <p>{errors.companyName}</p>}
 
-   <Autocomplete
-        onLoad={onAutocompleteLoad}
-        onPlaceChanged={onPlaceChanged}
-      > 
-        <Input
-          label="Company Address"
-          type="text"
-          name="companyAddress"
-          value={formData.companyAddress}
-          onChange={handleChange}
-          required
-        />
-      </Autocomplete>
-      {errors.companyAddress && <p className="text-red-500 text-sm">{errors.companyAddress}</p>}
-
-       {showMap && (
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          zoom={10}
-          center={markerPosition}
+        <Autocomplete
+          onLoad={onAutocompleteLoad}
+          onPlaceChanged={onPlaceChanged}
         >
-          <Marker position={markerPosition} />
-        </GoogleMap>
-      )}
-      
-      <PhoneInput
-  companyContact={formData.companyContact}
-  phoneNumber={formData.phoneNumber}
-  countries={countries}
-  onCompanyContactChange={(value) => setFormData({ ...formData, companyContact: value })}
-  onPhoneNumberChange={(e) => {
-    const value = e.target.value.replace(/\D/g, '').slice(0, 10); 
-    setFormData({ ...formData, phoneNumber: value });
-  }}
-/>
-{errors.companyContact && <p className="text-red-500 text-sm">{errors.companyContact}</p>}
-{errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber}</p>}
+          <Input
+            label="Company Address"
+            type="text"
+            name="companyAddress"
+            value={formData.companyAddress}
+            onChange={handleChange}
+            required
+          />
+        </Autocomplete>
+        {errors.companyAddress && (
+          <p className="text-red-500 text-sm">{errors.companyAddress}</p>
+        )}
 
+        {showMap && (
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            zoom={10}
+            center={markerPosition}
+          >
+            <Marker position={markerPosition} />
+          </GoogleMap>
+        )}
+
+        <PhoneInput
+          companyContact={formData.companyContact}
+          phoneNumber={formData.phoneNumber}
+          countries={countries}
+          onCompanyContactChange={(value) =>
+            setFormData({ ...formData, companyContact: value })
+          }
+          onPhoneNumberChange={(e) => {
+            const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+            setFormData({ ...formData, phoneNumber: value });
+          }}
+        />
+        {errors.companyContact && (
+          <p className="text-red-500 text-sm">{errors.companyContact}</p>
+        )}
+        {errors.phoneNumber && (
+          <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
+        )}
 
         <Input
           label="Email Address"
@@ -116,7 +125,7 @@ const { isLoaded, loadError,
           onChange={handleChange}
           required
         />
- {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
         <Input
           label="Password"
@@ -125,9 +134,10 @@ const { isLoaded, loadError,
           value={formData.password}
           onChange={handleChange}
           required
-     
         />
-{errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+        {errors.password && (
+          <p className="text-red-500 text-sm">{errors.password}</p>
+        )}
 
         <Input
           label="Confirm Password"
@@ -136,11 +146,12 @@ const { isLoaded, loadError,
           value={formData.confirmPassword}
           onChange={handleChange}
           required
-        
         />
-        {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
+        {errors.confirmPassword && (
+          <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+        )}
 
-<div className="flex items-center mb-4">
+        <div className="flex items-center mb-4">
           <input
             type="checkbox"
             name="ageConfirmed"
@@ -153,52 +164,54 @@ const { isLoaded, loadError,
             I confirm that I am above the age of 18.
           </label>
         </div>
-        {errors.ageConfirmed && <p className="text-red-500 text-sm">{errors.ageConfirmed}</p>}
+        {errors.ageConfirmed && (
+          <p className="text-red-500 text-sm">{errors.ageConfirmed}</p>
+        )}
 
-    <div className="mb-4 flex flex-col justify-center">
-  <div
-    className="captcha-container"
-    style={{
-      width: 'auto', 
-      transformOrigin: 'center', 
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center'
-    }}
-  >
-    <ReCAPTCHA
-      sitekey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY}
-      ref={recaptchaRef}
-        onChange={handleRecaptcha}
-    />
-  </div>
-
-</div>
+        <div className="mb-4 flex flex-col justify-center">
+          <div
+            className="captcha-container"
+            style={{
+              width: "auto",
+              transformOrigin: "center",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ReCAPTCHA
+              sitekey={import.meta.env.VITE_GOOGLE_RECAPTCHA_SITE_KEY}
+              ref={recaptchaRef}
+              onChange={handleRecaptcha}
+            />
+          </div>
+        </div>
 
         <div className="text-center text-sm text-gray-600 mb-4">
-          By creating an account, you accept our{' '}
+          By creating an account, you accept our{" "}
           <a href="/terms" className="text-blue-600">
             terms and conditions
           </a>
           .
         </div>
 
-<div className='items-center flex justify-center'>
-        <Button  //!capchaToken ||
-         disabled={ loading} 
-         label={loading ? "Loading..." : "Create Account"}
-         type="submit" />
+        <div className="items-center flex justify-center">
+          <Button //!capchaToken ||
+            disabled={loading}
+            label={loading ? "Loading..." : "Create Account"}
+            type="submit"
+          />
         </div>
 
         <div className="text-center mt-4">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link to="/sign-in" className="text-blue-600">
             Log In
           </Link>
           .
         </div>
       </form>
-
+    </>
   );
 };
 
