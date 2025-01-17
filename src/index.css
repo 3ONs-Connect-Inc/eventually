@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+
+
+
+.captcha-container {
+    transform: scale(1); 
+  }
+  
+  @media (max-width: 340px) {
+    .captcha-container {
+      transform: scale(0.8); 
+    }
+  }
+  @media (max-width: 280px) {
+    .captcha-container {
+      transform: scale(0.6); 
+    }
+  }
+  
+
+
